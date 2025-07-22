@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณสารอาหารส่วนบุคคล</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #56CCF2, #2F80ED);
+            font-family: 'Kanit', sans-serif;
+        }
+        .container {
+            max-width: 450px;
+            margin: auto;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        }
+        .header-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        .result-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            margin-top: 10px;
+        }
+        .protein { background: #3f51b5; }
+        .carbs { background: #ff9800; }
+        .fat { background: #e91e63; }
+        .fiber { background: #009688; }
+        .water { background: #2196f3; }
+        .risk-indicator {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .low-risk { background: #4CAF50; color: white; }
+        .moderate-risk { background: #FFC107; color: black; }
+        .high-risk { background: #F44336; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header-title">คำนวณสารอาหารส่วนบุคคล</div>
+            <input type="text" id="nickname" placeholder="ชื่อของคุณ" class="input-field">
+            <select id="gender" class="input-field">
+                <option value="">เลือกเพศ</option>
+                <option value="male">ชาย</option>
+                <option value="female">หญิง</option>
+            </select>
+            <input type="number" id="age" placeholder="อายุ (ปี)" class="input-field">
+            <input type="number" id="height" placeholder="ส่วนสูง (ซม.)" class="input-field">
+            <input type="number" id="weight" placeholder="น้ำหนัก (กก.)" class="input-field">
+            <button onclick="calculateNutrition()" class="btn-primary">คำนวณ</button>
+        </div>
+        <div id="results" class="mt-6"></div>
+    </div>
+
+    <script>
+        function calculateNutrition() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const protein = (weight * 1.5).toFixed(1);
+            const carbs = (weight * 2).toFixed(1);
+            const fat = (weight * 0.8).toFixed(1);
+            const fiber = (weight > 75) ? 30 : 25;
+            const water = (weight / 20).toFixed(1);
+
+            let riskLevel, riskClass;
+            if (weight / ((170/100) ** 2) < 22.9) {
+                riskLevel = "ความเสี่ยงต่ำ";
+                riskClass = "low-risk";
+            } else if (weight / ((170/100) ** 2) < 25) {
+                riskLevel = "ความเสี่ยงปานกลาง";
+                riskClass = "moderate-risk";
+            } else {
+                riskLevel = "ความเสี่ยงสูง";
+                riskClass = "high-risk";
+            }
+
+            document.getElementById('results').innerHTML = `
+                <div class='card'>
+                    <div class='risk-indicator ${riskClass}'>${riskLevel}</div>
+                    <div class='result-box protein'>โปรตีน: ${protein}g</div>
+                    <div class='result-box carbs'>คาร์โบไฮเดรต: ${carbs}g</div>
+                    <div class='result-box fat'>ไขมัน: ${fat}g</div>
+                    <div class='result-box fiber'>ไฟเบอร์: ${fiber}g</div>
+                    <div class='result-box water'>น้ำที่ควรดื่ม: ${water} ลิตร</div>
+                </div>`;
+        }
+    </script>
+</body>
+</html>
